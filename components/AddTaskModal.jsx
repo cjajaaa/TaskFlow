@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   View,
@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -15,68 +16,75 @@ export default function AddTaskModal({ visible, onClose, onSubmit }) {
   const [title, setTitle] = useState('');
 
   useEffect(() => {
-    if (!visible) setTitle('');
+    if (!visible) {
+      setTitle('');
+    }
   }, [visible]);
 
   const handleAdd = () => {
     const trimmed = title.trim();
     if (!trimmed) return;
+
     onSubmit(trimmed);
     setTitle('');
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.backdrop} />
-      </TouchableWithoutFeedback>
+    <Modal animationType="slide" transparent visible={visible} onRequestClose={onClose}>
+      <View style={styles.overlay}>
+        <TouchableWithoutFeedback onPress={onClose}>
+          <View style={styles.backdrop} />
+        </TouchableWithoutFeedback>
 
-      <KeyboardAvoidingView
-        behavior={Platform.select({ ios: 'padding', android: undefined })}
-        style={styles.centeredView}
-      >
-        <View style={styles.card}>
-          <Text style={styles.label}>New Task</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Task title"
-            placeholderTextColor="#9CA3AF"
-            value={title}
-            onChangeText={setTitle}
-            returnKeyType="done"
-            onSubmitEditing={handleAdd}
-          />
+        <KeyboardAvoidingView
+          behavior={Platform.select({ ios: 'padding', android: undefined })}
+          style={styles.centeredView}
+        >
+          <Pressable onPress={() => {}} style={styles.card}>
+            <Text style={styles.label}>New Task</Text>
+            <TextInput
+              autoFocus
+              style={styles.input}
+              placeholder="Task title"
+              placeholderTextColor="#9CA3AF"
+              value={title}
+              onChangeText={setTitle}
+              returnKeyType="done"
+              onSubmitEditing={handleAdd}
+            />
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleAdd}>
-              <Text style={styles.addText}>Add</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+            <View style={styles.buttonRow}>
+              <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onClose}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.addButton]} onPress={handleAdd}>
+                <Text style={styles.addText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  backdrop: {
+  overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   centeredView: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   card: {
-    width: '90%',
+    width: '100%',
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,

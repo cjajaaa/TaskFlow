@@ -1,3 +1,3 @@
-import IndexScreen from '../index';
+import App from '../../App';
 
-export default IndexScreen;
+export default App;
